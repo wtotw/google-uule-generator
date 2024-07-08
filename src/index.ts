@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { program } from "commander";
 import { SERCRET } from "./sercret";
 
@@ -22,7 +23,7 @@ const main = async (location: string) => {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"X-Goog-Api-Key": "<api-key>",
+				"X-Goog-Api-Key": `${process.env.API_KEY}`,
 				"X-Goog-FieldMask": "places.formattedAddress",
 			},
 			body: JSON.stringify(params),
