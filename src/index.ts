@@ -30,7 +30,7 @@ const main = async (location: string) => {
 	);
 
 	if (!res.ok) {
-		throw new Error("Error");
+		throw new Error("Error: Failed to fetch data");
 	}
 
 	const data: ResponseData = await res.json();
@@ -38,7 +38,12 @@ const main = async (location: string) => {
 		", ",
 		",",
 	);
+
 	const sercret = SERCRET[formattedAddress.length.toString()];
+	if (!sercret) {
+		throw new Error("Error: Invalid formatted address length");
+	}
+
 	const result = PREFIX + sercret + btoa(formattedAddress);
 
 	console.log(result);
