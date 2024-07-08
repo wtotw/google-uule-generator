@@ -44,7 +44,7 @@ const main = async (location: string) => {
 		throw new Error("Error: Invalid formatted address length");
 	}
 
-	const result = PREFIX + sercret + btoa(formattedAddress);
+	const result = `${PREFIX}${sercret}${btoa(formattedAddress)}`;
 
 	console.log(result);
 };
