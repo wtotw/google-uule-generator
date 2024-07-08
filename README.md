@@ -1,6 +1,6 @@
 # Google uule Generator
 
-Google検索で使われるuuleのジェネレーターです。
+Google検索で使われるuuleのジェネレーター。
 
 # 使い方
 
