@@ -1,0 +1,19 @@
+{
+	"name": "google-uule-generator",
+	"version": "1.0.0",
+	"description": "Google検索で使われるuuleのジェネレーターです。",
+	"main": "index.js",
+	"scripts": {
+		"uule": "ts-node src/index.ts"
+	},
+	"keywords": [],
+	"author": "wtotw",
+	"dependencies": {
+		"commander": "^12.1.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.3"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.8.3"
+	}
+}
