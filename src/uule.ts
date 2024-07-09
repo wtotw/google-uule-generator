@@ -1,5 +1,4 @@
 import "dotenv/config";
-import { program } from "commander";
 import { SERCRET } from "./sercret";
 
 type ResponseData = {
@@ -12,7 +11,7 @@ type Place = {
 
 const PREFIX = "w+CAIQICI";
 
-export const uule = async (location: string) => {
+export const getUule = async (location: string) => {
 	const params = {
 		textQuery: location,
 	};
@@ -36,6 +35,7 @@ export const uule = async (location: string) => {
 	}
 
 	const data: ResponseData = await res.json();
+
 	const formattedAddress = data.places[0].formattedAddress.replaceAll(
 		", ",
 		",",
@@ -50,10 +50,5 @@ export const uule = async (location: string) => {
 	const result = `${PREFIX}${sercret}${btoa(formattedAddress)}`;
 
 	console.log(result);
+	return result;
 };
-
-program.requiredOption("-l, --location <location>", "Location Name");
-program.parse();
-const options = program.opts();
-
-uule(options.location);
