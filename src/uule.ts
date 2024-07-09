@@ -49,6 +49,5 @@ export const getUule = async (location: string) => {
 
 	const result = `${PREFIX}${sercret}${btoa(formattedAddress)}`;
 
-	console.log(result);
 	return result;
 };
