@@ -15,13 +15,10 @@ vi .env
 pnpm install
 ```
 
-## uule出力
+## CLI
 
 ```bash
 pnpm ts-node src/command/uule.ts -l "東京都品川区"
-
-# 動作確認用
-pnpm uule -l "東京都品川区"
 ```
 
 ## CSV出力
