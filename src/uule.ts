@@ -12,7 +12,7 @@ type Place = {
 
 const PREFIX = "w+CAIQICI";
 
-const main = async (location: string) => {
+export const uule = async (location: string) => {
 	const params = {
 		textQuery: location,
 	};
@@ -31,6 +31,7 @@ const main = async (location: string) => {
 	);
 
 	if (!res.ok) {
+		console.log(await res.json());
 		throw new Error("Error: Failed to fetch data");
 	}
 
@@ -42,6 +43,7 @@ const main = async (location: string) => {
 
 	const sercret = SERCRET[formattedAddress.length.toString()];
 	if (!sercret) {
+		console.log(formattedAddress);
 		throw new Error("Error: Invalid formatted address length");
 	}
 
@@ -54,4 +56,4 @@ program.requiredOption("-l, --location <location>", "Location Name");
 program.parse();
 const options = program.opts();
 
-main(options.location);
+uule(options.location);
