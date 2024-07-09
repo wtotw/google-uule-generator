@@ -4,7 +4,7 @@
 	"description": "Google検索で使われるuuleのジェネレーターです。",
 	"main": "index.js",
 	"scripts": {
-		"uule": "ts-node src/index.ts"
+		"uule": "ts-node src/uule"
 	},
 	"keywords": [],
 	"author": "wtotw",
