@@ -90,7 +90,7 @@ export const getUuleByLatlng = async (latlng: string) => {
 	return getUule(formattedAddress);
 };
 
-export const getUule = async (address: string) => {
+export const getUule = (address: string) => {
 	const sercret = SERCRET[address.length];
 	if (!sercret) {
 		console.log(address);
