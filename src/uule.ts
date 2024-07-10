@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { SERCRET } from "./sercret";
 
-type ResponseData = {
+type PlaceResponseData = {
 	places: Place[];
 };
 
@@ -9,9 +9,17 @@ type Place = {
 	formattedAddress: string;
 };
 
+type GeoResponseData = {
+	results: Result[];
+};
+
+type Result = {
+	formatted_address: string;
+};
+
 const PREFIX = "w+CAIQICI";
 
-export const getUule = async (location: string) => {
+export const getUUleByLocation = async (location: string) => {
 	const params = {
 		textQuery: location,
 	};
@@ -34,20 +42,55 @@ export const getUule = async (location: string) => {
 		throw new Error("Error: Failed to fetch data");
 	}
 
-	const data: ResponseData = await res.json();
+	const data: PlaceResponseData = await res.json();
 
 	const formattedAddress = data.places[0].formattedAddress.replaceAll(
 		", ",
 		",",
 	);
 
-	const sercret = SERCRET[formattedAddress.length];
+	return getUule(formattedAddress);
+};
+
+export const getUuleByLatlng = async (latlng: string) => {
+	const params = {
+		latlng,
+		result_type: "locality",
+		key: `${process.env.API_KEY}`,
+	};
+	const query = new URLSearchParams(params);
+	const res = await fetch(
+		`https://maps.googleapis.com/maps/api/geocode/json?${query}`,
+		{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		},
+	);
+
+	if (!res.ok) {
+		console.log(await res.json());
+		throw new Error("Error: Failed to fetch data");
+	}
+
+	const data: GeoResponseData = await res.json();
+
+	const formattedAddress = data.results[0].formatted_address.replaceAll(
+		", ",
+		",",
+	);
+
+	return getUule(formattedAddress);
+};
+
+export const getUule = async (address: string) => {
+	const sercret = SERCRET[address.length];
 	if (!sercret) {
-		console.log(formattedAddress);
+		console.log(address);
 		throw new Error("Error: Invalid formatted address length");
 	}
 
-	const result = `${PREFIX}${sercret}${btoa(formattedAddress)}`;
-
+	const result = `${PREFIX}${sercret}${btoa(address)}`;
 	return result;
 };
