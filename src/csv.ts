@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as csv from "csv";
 
-import { getUule } from "./uule";
+import { getUuleByLatlng } from "./uule";
 
 const HEADER = [
 	"会社ID",
@@ -31,13 +31,13 @@ csv.parse(
 				return row;
 			}
 
-			const uule = await getUule(row.取得地域);
+			const uule = await getUuleByLatlng(
+				`${row.stores_latitude},${row.stores_longitude}`,
+			);
 			return { ...row, uule: uule };
 		});
 
 		const uuleData = await Promise.all(map);
-
-		console.log(uuleData);
 
 		csv.stringify(
 			uuleData,
