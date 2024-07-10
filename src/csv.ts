@@ -20,6 +20,15 @@ const HEADER = [
 	"削除済み",
 ] as const;
 
+const isTarget = (row: { [key in (typeof HEADER)[number]]: string }) => {
+	return (
+		row.削除済み !== "TRUE" &&
+		row.stores_latitude &&
+		row.stores_longitude &&
+		!row.uule
+	);
+};
+
 const input = fs.readFileSync("public/csv/input/list.csv", "utf-8");
 csv.parse(
 	input,
@@ -27,46 +36,39 @@ csv.parse(
 	async (_err, data: { [key in (typeof HEADER)[number]]: string }[]) => {
 		console.log(data.length);
 
-		const { errors, results } = await PromisePool.withConcurrency(10)
+		const { errors, results } = await PromisePool.for(data)
+			.withConcurrency(10)
 			.useCorrespondingResults()
-			.for(data)
 			.process(async (row) => {
-				if (row.削除済み === "TRUE" || !row.取得地域 || row.uule) {
-					return row;
+				if (!isTarget(row)) {
+					return Promise.resolve();
 				}
 
-				const uule = await getUuleByLatlng(
+				return await getUuleByLatlng(
 					`${row.stores_latitude},${row.stores_longitude}`,
 				);
-				return { ...row, uule: uule };
 			});
 		if (errors.length) {
 			console.error("errors: ", errors);
 		}
 
-		// 会社ID、店舗IDでソート
-		results.sort((a, b) => {
-			if (a.会社ID > b.会社ID) {
-				return 1;
+		const uuleData = data.map((row, i) => {
+			if (!isTarget(row)) {
+				return row;
 			}
-			if (a.会社ID < b.会社ID) {
-				return -1;
-			}
-			if (a.店舗ID > b.店舗ID) {
-				return 1;
-			}
-			if (a.店舗ID < b.店舗ID) {
-				return -1;
-			}
-			return 0;
+			return { ...row, uule: results[i] };
 		});
 
-		csv.stringify(results, { header: true, columns: HEADER }, (err, output) => {
-			if (err) {
-				console.error(err);
-				return;
-			}
-			fs.writeFileSync("public/csv/output/list.csv", output);
-		});
+		csv.stringify(
+			uuleData,
+			{ header: true, columns: HEADER },
+			(err, output) => {
+				if (err) {
+					console.error(err);
+					return;
+				}
+				fs.writeFileSync("public/csv/output/list.csv", output);
+			},
+		);
 	},
 );
