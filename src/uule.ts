@@ -41,7 +41,7 @@ export const getUule = async (location: string) => {
 		",",
 	);
 
-	const sercret = SERCRET[formattedAddress.length.toString()];
+	const sercret = SERCRET[formattedAddress.length];
 	if (!sercret) {
 		console.log(formattedAddress);
 		throw new Error("Error: Invalid formatted address length");
