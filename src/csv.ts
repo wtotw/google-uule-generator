@@ -1,5 +1,6 @@
 import * as fs from "node:fs";
 import * as csv from "csv";
+import { PromisePool } from "@supercharge/promise-pool";
 
 import { getUuleByLatlng } from "./uule";
 
@@ -26,29 +27,28 @@ csv.parse(
 	async (_err, data: { [key in (typeof HEADER)[number]]: string }[]) => {
 		console.log(data.length);
 
-		const map = data.map(async (row) => {
-			if (row.削除済み === "TRUE" || !row.取得地域 || row.uule) {
-				return row;
-			}
-
-			const uule = await getUuleByLatlng(
-				`${row.stores_latitude},${row.stores_longitude}`,
-			);
-			return { ...row, uule: uule };
-		});
-
-		const uuleData = await Promise.all(map);
-
-		csv.stringify(
-			uuleData,
-			{ header: true, columns: HEADER },
-			(err, output) => {
-				if (err) {
-					console.error(err);
-					return;
+		const { errors, results } = await PromisePool.withConcurrency(10)
+			.for(data)
+			.process(async (row) => {
+				if (row.削除済み === "TRUE" || !row.取得地域 || row.uule) {
+					return row;
 				}
-				fs.writeFileSync("public/csv/output/list.csv", output);
-			},
-		);
+
+				const uule = await getUuleByLatlng(
+					`${row.stores_latitude},${row.stores_longitude}`,
+				);
+				return { ...row, uule: uule };
+			});
+		if (errors.length) {
+			console.error(errors);
+		}
+
+		csv.stringify(results, { header: true, columns: HEADER }, (err, output) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+			fs.writeFileSync("public/csv/output/list.csv", output);
+		});
 	},
 );

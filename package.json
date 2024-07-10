@@ -9,6 +9,7 @@
 	"keywords": [],
 	"author": "wtotw",
 	"dependencies": {
+		"@supercharge/promise-pool": "^3.2.0",
 		"commander": "^12.1.0",
 		"csv": "^6.3.9",
 		"dotenv": "^16.4.5",
