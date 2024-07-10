@@ -43,6 +43,9 @@ export const getUUleByLocation = async (location: string) => {
 	}
 
 	const data: PlaceResponseData = await res.json();
+	if (!data.places.length) {
+		throw new Error("Error: No data found");
+	}
 
 	const formattedAddress = data.places[0].formattedAddress.replaceAll(
 		", ",
@@ -75,6 +78,9 @@ export const getUuleByLatlng = async (latlng: string) => {
 	}
 
 	const data: GeoResponseData = await res.json();
+	if (!data.results.length) {
+		throw new Error("Error: No data found");
+	}
 
 	const formattedAddress = data.results[0].formatted_address.replaceAll(
 		", ",
