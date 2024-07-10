@@ -44,6 +44,23 @@ csv.parse(
 			console.error("errors: ", errors);
 		}
 
+		// 会社ID、店舗IDでソート
+		results.sort((a, b) => {
+			if (a.会社ID > b.会社ID) {
+				return 1;
+			}
+			if (a.会社ID < b.会社ID) {
+				return -1;
+			}
+			if (a.店舗ID > b.店舗ID) {
+				return 1;
+			}
+			if (a.店舗ID < b.店舗ID) {
+				return -1;
+			}
+			return 0;
+		});
+
 		csv.stringify(results, { header: true, columns: HEADER }, (err, output) => {
 			if (err) {
 				console.error(err);
