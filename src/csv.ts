@@ -28,6 +28,7 @@ csv.parse(
 		console.log(data.length);
 
 		const { errors, results } = await PromisePool.withConcurrency(10)
+			.useCorrespondingResults()
 			.for(data)
 			.process(async (row) => {
 				if (row.削除済み === "TRUE" || !row.取得地域 || row.uule) {
@@ -40,7 +41,7 @@ csv.parse(
 				return { ...row, uule: uule };
 			});
 		if (errors.length) {
-			console.error(errors);
+			console.error("errors: ", errors);
 		}
 
 		csv.stringify(results, { header: true, columns: HEADER }, (err, output) => {
