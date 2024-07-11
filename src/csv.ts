@@ -21,14 +21,10 @@ const HEADER = [
 ] as const;
 
 const isTarget = (row: { [key in (typeof HEADER)[number]]: string }) => {
-	return (
-		row.削除済み !== "TRUE" &&
-		row.取得地域 &&
-		!row.uule
-	);
+	return row.削除済み !== "TRUE" && row.取得地域 && !row.uule;
 };
 
-const input = fs.readFileSync("public/csv/input/list.csv", "utf-8");
+const input = fs.readFileSync("public/csv/input/locations.csv", "utf-8");
 csv.parse(
 	input,
 	{ columns: true },
@@ -43,10 +39,7 @@ csv.parse(
 					return Promise.resolve();
 				}
 
-				return await getUule(
-					`${row.stores_latitude},${row.stores_longitude}`,
-					false,
-				);
+				return await getUule(`${row.取得地域}`, false);
 			});
 		if (errors.length) {
 			console.error("errors: ", errors);
@@ -67,7 +60,7 @@ csv.parse(
 					console.error(err);
 					return;
 				}
-				fs.writeFileSync("public/csv/output/list.csv", output);
+				fs.writeFileSync("public/csv/output/locations.csv", output);
 			},
 		);
 	},
