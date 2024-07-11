@@ -51,10 +51,12 @@ export const getUule = async (location: string, reverseGeo: boolean) => {
 		throw new Error("Error: No data found");
 	}
 
-	const formattedAddress = data.results[0].formatted_address.replaceAll(
-		", ",
-		",",
-	);
+	const formattedAddress = data.results[0].formatted_address
+		.replaceAll(", ", ",")
+		.replaceAll("Ō", "O")
+		.replaceAll("ō", "o")
+		.replaceAll("Ū", "U")
+		.replaceAll("ū", "u");
 
 	const sercret = SERCRET[formattedAddress.length];
 	if (!sercret) {
