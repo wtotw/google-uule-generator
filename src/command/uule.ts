@@ -1,12 +1,10 @@
 import "dotenv/config";
 import { program } from "commander";
 
-import { getUUleByLocation, getUuleByLatlng } from "../uule";
+import { getUule } from "../uule";
 
 export const main = async (location: string, reverseGeo: boolean) => {
-	const result = reverseGeo
-		? await getUuleByLatlng(location)
-		: await getUUleByLocation(location);
+	const result = await getUule(location, reverseGeo);
 	console.log(result);
 };
 

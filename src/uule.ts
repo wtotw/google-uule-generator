@@ -1,12 +1,12 @@
 import "dotenv/config";
 import { SERCRET } from "./sercret";
 
-type PlaceResponseData = {
-	places: Place[];
-};
-
-type Place = {
-	formattedAddress: string;
+type Params = {
+	key: string;
+	latlng?: string;
+	result_type?: string;
+	address?: string;
+	component?: string;
 };
 
 type GeoResponseData = {
@@ -19,48 +19,17 @@ type Result = {
 
 const PREFIX = "w+CAIQICI";
 
-export const getUUleByLocation = async (location: string) => {
-	const params = {
-		textQuery: location,
-	};
-
-	const res = await fetch(
-		"https://places.googleapis.com/v1/places:searchText",
-		{
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-Goog-Api-Key": `${process.env.API_KEY}`,
-				"X-Goog-FieldMask": "places.formattedAddress",
-			},
-			body: JSON.stringify(params),
-		},
-	);
-
-	if (!res.ok) {
-		console.log(await res.json());
-		throw new Error("Error: Failed to fetch data");
-	}
-
-	const data: PlaceResponseData = await res.json();
-	if (!data.places.length) {
-		throw new Error("Error: No data found");
-	}
-
-	const formattedAddress = data.places[0].formattedAddress.replaceAll(
-		", ",
-		",",
-	);
-
-	return getUule(formattedAddress);
-};
-
-export const getUuleByLatlng = async (latlng: string) => {
-	const params = {
-		latlng,
-		result_type: "locality",
+export const getUule = async (location: string, reverseGeo: boolean) => {
+	const params: Params = {
 		key: `${process.env.API_KEY}`,
 	};
+	if (reverseGeo) {
+		params.latlng = location;
+		params.result_type = "locality";
+	} else {
+		params.address = location;
+		params.component = "locality";
+	}
 	const query = new URLSearchParams(params);
 	const res = await fetch(
 		`https://maps.googleapis.com/maps/api/geocode/json?${query}`,
@@ -87,16 +56,12 @@ export const getUuleByLatlng = async (latlng: string) => {
 		",",
 	);
 
-	return getUule(formattedAddress);
-};
-
-export const getUule = (address: string) => {
-	const sercret = SERCRET[address.length];
+	const sercret = SERCRET[formattedAddress.length];
 	if (!sercret) {
-		console.log(address);
+		console.log(formattedAddress);
 		throw new Error("Error: Invalid formatted address length");
 	}
 
-	const result = `${PREFIX}${sercret}${btoa(address)}`;
+	const result = `${PREFIX}${sercret}${btoa(formattedAddress)}`;
 	return result;
 };

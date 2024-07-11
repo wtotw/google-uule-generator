@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import * as csv from "csv";
 import { PromisePool } from "@supercharge/promise-pool";
 
-import { getUuleByLatlng } from "./uule";
+import { getUule } from "./uule";
 
 const HEADER = [
 	"会社ID",
@@ -23,8 +23,7 @@ const HEADER = [
 const isTarget = (row: { [key in (typeof HEADER)[number]]: string }) => {
 	return (
 		row.削除済み !== "TRUE" &&
-		row.stores_latitude &&
-		row.stores_longitude &&
+		row.取得地域 &&
 		!row.uule
 	);
 };
@@ -44,8 +43,9 @@ csv.parse(
 					return Promise.resolve();
 				}
 
-				return await getUuleByLatlng(
+				return await getUule(
 					`${row.stores_latitude},${row.stores_longitude}`,
+					false,
 				);
 			});
 		if (errors.length) {
