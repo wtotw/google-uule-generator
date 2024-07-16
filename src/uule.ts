@@ -53,10 +53,16 @@ export const getUule = async (location: string, reverseGeo: boolean) => {
 
 	const formattedAddress = data.results[0].formatted_address
 		.replaceAll(", ", ",")
-		.replaceAll("Ō", "O")
-		.replaceAll("ō", "o")
+		.replaceAll("ā", "a")
+		.replaceAll("Ā", "A")
+		.replaceAll("ī", "i")
+		.replaceAll("Ī", "I")
+		.replaceAll("ū", "u")
 		.replaceAll("Ū", "U")
-		.replaceAll("ū", "u");
+		.replaceAll("ē", "e")
+		.replaceAll("Ē", "E")
+		.replaceAll("ō", "o")
+		.replaceAll("Ō", "O");
 
 	const sercret = SERCRET[formattedAddress.length];
 	if (!sercret) {
